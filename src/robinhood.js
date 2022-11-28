@@ -541,6 +541,35 @@ function RobinhoodWebApi(opts, callback) {
       callback
     );
   };
+  
+  var _place_options_order = function (options, callback) {
+    return _request.post(
+      {
+        uri: _apiUrl + _endpoints.options_orders,
+        form: {
+          account: _private.account,
+          price: options.bid_price,
+          quantity: options.quantity,
+          direction: options.transaction,
+          legs: options.legs,
+          time_in_force: options.time || 'gfd',
+          trigger: options.trigger || 'immediate',
+          type: options.type || 'market'
+        }
+      },
+      callback
+    );
+  };
+
+  api.place__options_spread_credit_order = function (options, callback) {
+    options.transaction = 'credit';
+    return _place_options_order(options, callback);
+  };
+
+  api.place__options_spread_debit_order = function (options, callback) {
+    options.transaction = 'debit';
+    return _place_options_order(options, callback);
+  };
 
   api.options_dates = function (symbol, callback) {
     api.instruments(symbol, function (err, response, { results }) {
